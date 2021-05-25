@@ -1,0 +1,40 @@
+type Page {
+    total: Int
+    previous: String
+    next: String
+}
+
+type HomeWorld {
+    name: String
+    rotation_period: String
+    orbital_period: String
+    diameter: String
+    climate: String
+    gravity: String
+    terrain: String
+    surface_water: String
+    population: String
+}
+
+type Person {
+    name: String
+    height: String
+    mass: String
+    gender: String
+    home_world: HomeWorld
+}
+
+type DataResponse {
+    data: [Person]
+    page: Page
+}
+
+input PageFilter {
+    name: String,
+    page: Int
+}
+
+
+type Query {
+    fetchPeople(filter: PageFilter): DataResponse
+}
