@@ -17,6 +17,7 @@ const getHomeWorldMock = jest.fn(async () => {
 });
 
 describe('Swapi Call', () => {
+
     beforeAll(async () => {
       jest.spyOn(SwapiData.prototype, 'request').mockImplementation(swapiApiMock);
       jest.spyOn(SwapiData.prototype, 'getHomeWorld').mockImplementation(getHomeWorldMock);
