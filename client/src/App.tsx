@@ -2,7 +2,7 @@ import React from 'react';
 import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink} from '@apollo/client'
 // import { onError } from '@apollo/client/link/error'
 
-import Person from './components/People'
+import Person from './components/people/People'
 
 // const errorLink = onError(({ graphqlErrors, networkError}) =>{
 //   if (graphqlErrors) {

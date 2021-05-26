@@ -12,8 +12,8 @@ import {
 } from '@material-ui/core';
 import { useQuery} from '@apollo/client'
 
-import {LOAD_PEOPLE} from '../graphql/queries'
-import {PersonType} from '../graphql/types'
+import {LOAD_PEOPLE} from '../../graphql/queries'
+import {PersonType} from '../../graphql/types'
 
 const useStyles = makeStyles({
   root: {
@@ -24,6 +24,10 @@ const useStyles = makeStyles({
   },
   chip:{
     margin: 10
+  },
+  loader:{
+    color: 'blue',
+    fontWeight: 'bolder'
   }
 });
 
@@ -51,7 +55,7 @@ export default function Person({open, onClose, name}: any) {
    
   return (
     <>
-      {loading ? (<p>Loading...</p>) :
+      {loading ? (<p className={classes.loader}>Loading...</p>) :
         <Dialog onClose={handleClose}  aria-labelledby="simple-dialog-title" open={open}>
           <DialogTitle id="simple-dialog-title">{name} Details</DialogTitle>
             <Card className={classes.root} variant="outlined">

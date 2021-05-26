@@ -13,10 +13,10 @@ import InfoIcon from '@material-ui/icons/Info';
 import { useQuery} from '@apollo/client'
 import ReactPaginate from 'react-paginate'
 
-import StarWarImage from '../assets/skywalker_saga.jpeg'
-import {LOAD_PEOPLE} from '../graphql/queries'
-import Person from './Person'
-import {PersonType} from '../graphql/types'
+import StarWarImage from '../../assets/skywalker_saga.jpeg'
+import {LOAD_PEOPLE} from '../../graphql/queries'
+import Person from '../person/Person'
+import {PersonType} from '../../graphql/types'
 import './people.css'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'space-around',
       overflow: 'hidden',
       backgroundColor: theme.palette.background.paper,
+      padding: 10
     },
     gridList: {
       width: "70%",
@@ -42,6 +43,14 @@ const useStyles = makeStyles((theme: Theme) =>
       "&:hover": {
         backgroundColor: theme.palette.primary.light
       }
+    },
+    headerName:{
+      color: '#800',
+      fontWeight: 'bolder'
+    },
+    loader:{
+      color: 'blue',
+      fontWeight: 'bolder'
     }
   }),
 );
@@ -54,8 +63,8 @@ export default function People() {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState('');
   const [pageNumber, setPageNumber] = useState(1);
-  const [count, setCount] = useState(0);
-
+  const [count, setCount] = useState(1);
+  
 
   const {error, loading, data} = useQuery(LOAD_PEOPLE, {variables: { filter: {name: '', page:pageNumber}}});
 
@@ -65,7 +74,7 @@ export default function People() {
       setPeople(fetchPeople.data)      
       setCount(fetchPeople.page.total)
     }
-  }, [data])
+  }, [data, pageNumber])
   
   const handleClickOpen = (name: any) => {
     setName(name)
@@ -77,21 +86,20 @@ export default function People() {
   };
 
   const pageCount: number = Math.ceil(count / perPage);
-
+  
   const changePage = ({selected}: any)=>{
     setPageNumber(selected)
   }
 
   if (error) return <p>Error: {error.message}</p>;
 
-
   return (
     <>
-      {loading ? (<p>Loading...</p>) :
+      {loading ? (<p className={classes.loader}>Loading...</p>) :
         <div className={classes.root}>
         <GridList cellHeight={200} className={classes.gridList} cols={3}>
           <GridListTile key="Subheader" cols={2} style={{ height: 'auto' }}>
-            <ListSubheader component="div"><h1>STAR WARS</h1></ListSubheader>
+            <ListSubheader component="div"><h1 className={classes.headerName}>STAR WARS</h1></ListSubheader>
             <Person open={open} name={name} onClose={handleClose} />
           </GridListTile>
           {people.map((person, index) => (
@@ -119,6 +127,8 @@ export default function People() {
             nextLinkClassName={"nextBttn"}
             disabledClassName={"paginationDisabled"}
             activeClassName={"paginationActive"}
+            pageRangeDisplayed={10}
+            marginPagesDisplayed={10}
           />
       </div>
       }
