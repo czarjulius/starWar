@@ -23,7 +23,7 @@ const useStyles = makeStyles({
     fontSize: 14,
   },
   chip:{
-    marginRight: 10
+    margin: 10
   }
 });
 

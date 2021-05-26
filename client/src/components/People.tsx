@@ -1,79 +1,69 @@
 import React, {useState, useEffect} from 'react'
-import { makeStyles, 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableContainer, 
-  TableHead, 
-  TableRow,
-  Paper,
-  createStyles, 
+import { 
   Theme,
-  Typography,
-  Grid,
-  Avatar
+  createStyles, 
+  makeStyles,
+  GridList,
+  GridListTile,
+  GridListTileBar,
+  ListSubheader, 
+  IconButton,
 } from '@material-ui/core';
+import InfoIcon from '@material-ui/icons/Info';
 import { useQuery} from '@apollo/client'
+import ReactPaginate from 'react-paginate'
 
+import StarWarImage from '../assets/skywalker_saga.jpeg'
 import {LOAD_PEOPLE} from '../graphql/queries'
 import Person from './Person'
 import {PersonType} from '../graphql/types'
+import './people.css'
 
-const useStyles = makeStyles(({palette, spacing }: Theme)=>
-createStyles({
-  table: {
-    maxWidth: "100%",
-  },
-  tableContainer:{
-    borderRadius: 15,
-    margin: "10px 10px",
-    maxWidth: '100%'
-  },
-  tableHeaderCell:{
-    fontWeight: 'bold',
-    textTransform: 'uppercase',
-    backgroundColor: palette.primary.dark,
-    color: palette.getContrastText(palette.primary.dark) 
-  },
-  avatar: {
-    color: palette.getContrastText(palette.primary.light),
-    backgroundColor: palette.primary.dark
-  },
-  name: {
-    fontWeight: 'bold',
-    color: 'black'
-  },
-  paper: {
-    border: '1px solid',
-    padding: spacing(1),
-    backgroundColor: palette.background.paper,
-  },
-  typography: {
-    padding: 10
-  }
-}));
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      justifyContent: 'space-around',
+      overflow: 'hidden',
+      backgroundColor: theme.palette.background.paper,
+    },
+    gridList: {
+      width: "70%",
+      maxHeight: "30%",
+    },
+    icon: {
+      color: 'rgba(255, 255, 255, 0.54)',
+    },
+    image:{
+      objectFit: 'cover'
+    },
+    hover: {
+      "&:hover": {
+        backgroundColor: theme.palette.primary.light
+      }
+    }
+  }),
+);
 
-
-const columns = [
-  { id: 'name', label: 'name' },
-  { id: 'height', label: 'height'},
-  { id: 'mass', label: 'mass'},
-  { id: 'gender', label: 'gender'}
-];
 
 export default function People() {
   const classes = useStyles();
+  const perPage = 10;
   const [people, setPeople] = useState<PersonType[]>([])
   const [open, setOpen] = useState(false);
   const [name, setName] = useState('');
+  const [pageNumber, setPageNumber] = useState(1);
+  const [count, setCount] = useState(0);
 
 
-  const {error, loading, data} = useQuery(LOAD_PEOPLE, {variables: { filter: {name: '' }}});
+  const {error, loading, data} = useQuery(LOAD_PEOPLE, {variables: { filter: {name: '', page:pageNumber}}});
 
   useEffect(() => {
     if (data) {
       const { fetchPeople} = data
-      setPeople(fetchPeople.data)
+      setPeople(fetchPeople.data)      
+      setCount(fetchPeople.page.total)
     }
   }, [data])
   
@@ -86,51 +76,52 @@ export default function People() {
     setOpen(false);
   };
 
+  const pageCount: number = Math.ceil(count / perPage);
+
+  const changePage = ({selected}: any)=>{
+    setPageNumber(selected)
+  }
+
   if (error) return <p>Error: {error.message}</p>;
 
 
   return (
     <>
-    {loading ? (<p>Loading...</p>) :
-      <TableContainer component={Paper} className={classes.tableContainer}>
-        <h1>STAR WARS</h1>
-        <Person open={open} name={name} onClose={handleClose} />
-        <Table className={classes.table} aria-label="simple table">
-          <TableHead>
-          <TableRow>
-          {columns.map((col)=>(
-            <TableCell 
-            className={classes.tableHeaderCell} 
-            key={col.id}
-            >
-              {col.label}
-          </TableCell>
-          ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
+      {loading ? (<p>Loading...</p>) :
+        <div className={classes.root}>
+        <GridList cellHeight={200} className={classes.gridList} cols={3}>
+          <GridListTile key="Subheader" cols={2} style={{ height: 'auto' }}>
+            <ListSubheader component="div"><h1>STAR WARS</h1></ListSubheader>
+            <Person open={open} name={name} onClose={handleClose} />
+          </GridListTile>
           {people.map((person, index) => (
-              <TableRow key={index} onClick={()=>{handleClickOpen(person.name)}}>
-                <TableCell component="th" scope="row">
-                  <Grid container>
-                    <Grid item lg={4}>
-                      <Avatar alt={person.name} src={'.'} className={classes.avatar}/>
-                    </Grid>
-                    <Grid item lg={8}> 
-                      <Typography className={classes.name} component='span'>{person.name}</Typography>
-                    </Grid>
-                  </Grid>
-                    
-                </TableCell>
-                <TableCell >{person.mass}</TableCell>
-                <TableCell >{person.height}</TableCell>
-                <TableCell >{person.gender}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    }
+            <GridListTile key={index} onClick={()=>{handleClickOpen(person.name)}} className={classes.hover}>
+              <img src={StarWarImage} alt={person.name} className={classes.image}/>
+              <GridListTileBar
+                title={person.name}
+                subtitle={<span>gender: {person.gender}</span>}
+                actionIcon={
+                  <IconButton aria-label={`info about ${person.name}`} className={classes.icon}>
+                    <InfoIcon />
+                  </IconButton>
+                }
+              />
+            </GridListTile>
+          ))}
+        </GridList>
+          <ReactPaginate
+            previousLabel={"Previous"}
+            nextLabel={"Next"}
+            pageCount={pageCount}
+            onPageChange={changePage}
+            containerClassName={"paginationBttns"}
+            previousLinkClassName={"previousBttn"}
+            nextLinkClassName={"nextBttn"}
+            disabledClassName={"paginationDisabled"}
+            activeClassName={"paginationActive"}
+          />
+      </div>
+      }
     </>
   )
 }
