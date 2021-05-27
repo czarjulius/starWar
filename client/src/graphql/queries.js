@@ -1,6 +1,5 @@
-import { gql} from '@apollo/client';
-import {PageFilter} from './types'
-
+import { gql} from '@apollo/client'; // eslint-disable-next-line
+import {PageFilter} from './types' 
 
 export const LOAD_PEOPLE = gql`
     query FetchPeople($filter: PageFilter) {

@@ -58,7 +58,6 @@ class SwapiData extends RESTDataSource {
       page: filter?.page && filter?.page > 0 ? filter?.page : 1,
     };
 
-    // remove undefined, empty and null query paramter
     const filteredQuery = Object.entries(query).reduce((a: any, [k, v]: any) => (v == null ? a : (a[k] = v, a)), {});
     const url = new URLSearchParams(filteredQuery);
     const {
