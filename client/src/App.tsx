@@ -13,7 +13,7 @@ import Person from './components/people/People'
 // })
 
 const link = createHttpLink({
-  uri:  "http://localhost:7070/graphql"
+  uri:  `${process.env.REACT_APP_BASE_URL}`
 });
 
 const client = new ApolloClient({

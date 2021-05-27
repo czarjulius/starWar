@@ -41,7 +41,7 @@ const apolloServer = new ApolloServer({
 apolloServer.applyMiddleware({ app });
 
 const shutdown = async (serverApp: Server) => {
-  console.info('Received kill signal, shutting down gracefully'); // eslint-disable-line no-console
+  console.info('Received kill signal, shutting down gracefully');
   await serverApp.close();
   return process.exit();
 };

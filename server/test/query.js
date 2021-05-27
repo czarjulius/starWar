@@ -26,7 +26,6 @@ query FetchPeople($filter: PageFilter) {
   }
 }
 `
-
 module.exports = {
   fetchPeopleQuery
 }
