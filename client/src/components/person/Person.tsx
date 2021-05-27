@@ -31,7 +31,6 @@ const useStyles = makeStyles({
   }
 });
 
-
 export default function Person({open, onClose, name}: any) {
   const classes = useStyles();
   const [personDetail, setPersonDetail] = useState<PersonType>()
@@ -50,8 +49,6 @@ export default function Person({open, onClose, name}: any) {
   }, [data, name])
   
   if (error) return <p>Error: {error.message}</p>;
-
-
    
   return (
     <>

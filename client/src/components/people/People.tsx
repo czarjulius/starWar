@@ -55,7 +55,6 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-
 export default function People() {
   const classes = useStyles();
   const perPage = 10;
@@ -74,7 +73,7 @@ export default function People() {
       setPeople(fetchPeople.data)      
       setCount(fetchPeople.page.total)
     }
-  }, [data, pageNumber])
+  }, [data, pageNumber])  
   
   const handleClickOpen = (name: any) => {
     setName(name)
@@ -88,7 +87,7 @@ export default function People() {
   const pageCount: number = Math.ceil(count / perPage);
   
   const changePage = ({selected}: any)=>{
-    setPageNumber(selected)
+    setPageNumber(selected +1)
   }
 
   if (error) return <p>Error: {error.message}</p>;
